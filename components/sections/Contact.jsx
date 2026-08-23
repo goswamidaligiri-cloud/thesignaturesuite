@@ -10,9 +10,11 @@ export default function Contact() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // Phase 2B: wire to Sanity-defined form endpoint or a form service.
+    // Phase 2B: wire to a Sanity-configured form endpoint or form service.
     setSent(true);
   };
+
+  const hasAnyDetail = contact.phone || contact.whatsapp || contact.email || contact.hours || contact.address;
 
   return (
     <section id="contact" className="py-28 md:py-40 bg-stone2">
@@ -26,45 +28,59 @@ export default function Contact() {
             {contact.headingLine1} <br />
             <span className="italic text-champagne">{contact.headingLine2}</span>
           </h2>
-          <p className="mt-8 text-muted2 text-base md:text-lg leading-relaxed max-w-md">{contact.intro}</p>
+          {contact.intro && (
+            <p className="mt-8 text-muted2 text-base md:text-lg leading-relaxed max-w-md">{contact.intro}</p>
+          )}
 
-          <ul className="mt-12 space-y-6">
-            <li className="flex items-start gap-4">
-              <Phone className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
-              <div>
-                <div className="eyebrow">Reservations</div>
-                <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="h-display text-2xl text-ink hover:text-champagne">{contact.phone}</a>
-              </div>
-            </li>
-            <li className="flex items-start gap-4">
-              <MessageCircle className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
-              <div>
-                <div className="eyebrow">WhatsApp Concierge</div>
-                <a href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" className="h-display text-2xl text-ink hover:text-champagne">{contact.whatsapp}</a>
-              </div>
-            </li>
-            <li className="flex items-start gap-4">
-              <Mail className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
-              <div>
-                <div className="eyebrow">Email</div>
-                <a href={`mailto:${contact.email}`} className="h-display text-2xl text-ink hover:text-champagne">{contact.email}</a>
-              </div>
-            </li>
-            <li className="flex items-start gap-4">
-              <Clock className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
-              <div>
-                <div className="eyebrow">Hours</div>
-                <p className="text-ink">{contact.hours}</p>
-              </div>
-            </li>
-            <li className="flex items-start gap-4">
-              <MapPin className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
-              <div>
-                <div className="eyebrow">Address</div>
-                <p className="text-ink">{contact.address}</p>
-              </div>
-            </li>
-          </ul>
+          {hasAnyDetail && (
+            <ul className="mt-12 space-y-6">
+              {contact.phone && (
+                <li className="flex items-start gap-4">
+                  <Phone className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
+                  <div>
+                    <div className="eyebrow">Reservations</div>
+                    <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="h-display text-2xl text-ink hover:text-champagne">{contact.phone}</a>
+                  </div>
+                </li>
+              )}
+              {contact.whatsapp && (
+                <li className="flex items-start gap-4">
+                  <MessageCircle className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
+                  <div>
+                    <div className="eyebrow">WhatsApp Concierge</div>
+                    <a href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" className="h-display text-2xl text-ink hover:text-champagne">{contact.whatsapp}</a>
+                  </div>
+                </li>
+              )}
+              {contact.email && (
+                <li className="flex items-start gap-4">
+                  <Mail className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
+                  <div>
+                    <div className="eyebrow">Email</div>
+                    <a href={`mailto:${contact.email}`} className="h-display text-2xl text-ink hover:text-champagne">{contact.email}</a>
+                  </div>
+                </li>
+              )}
+              {contact.hours && (
+                <li className="flex items-start gap-4">
+                  <Clock className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
+                  <div>
+                    <div className="eyebrow">Hours</div>
+                    <p className="text-ink">{contact.hours}</p>
+                  </div>
+                </li>
+              )}
+              {contact.address && (
+                <li className="flex items-start gap-4">
+                  <MapPin className="w-4 h-4 mt-1.5 text-champagne" strokeWidth={1.5} />
+                  <div>
+                    <div className="eyebrow">Address</div>
+                    <p className="text-ink">{contact.address}</p>
+                  </div>
+                </li>
+              )}
+            </ul>
+          )}
         </div>
 
         <div className="md:col-span-6">
@@ -75,7 +91,7 @@ export default function Contact() {
             {sent ? (
               <div className="py-12 text-center">
                 <div className="h-display italic text-champagne text-3xl mb-4">Thank you.</div>
-                <p className="text-muted2 max-w-sm mx-auto">Our concierge will be in touch within the hour. In the meantime, a warm welcome.</p>
+                <p className="text-muted2 max-w-sm mx-auto">Your enquiry has been received. Response-time policy editable via CMS.</p>
               </div>
             ) : (
               <div className="grid gap-5">

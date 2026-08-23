@@ -1,7 +1,13 @@
 import { ArrowUpRight } from 'lucide-react';
-import { suites } from '@/lib/content';
+import { suites, suitesMeta } from '@/lib/content';
 
 function Card({ s, large }) {
+  const meta = [
+    s.area,
+    s.beds,
+    s.priceFrom ? `From ₹${Number(s.priceFrom).toLocaleString('en-IN')}` : null,
+  ].filter(Boolean).join(' · ');
+
   return (
     <a href={`#${s.slug}`} className={`group block ${large ? 'md:col-span-8' : 'md:col-span-4'}`}>
       <div className="relative overflow-hidden bg-stone2 aspect-[4/5]">
@@ -12,11 +18,11 @@ function Card({ s, large }) {
         </div>
         <div className="absolute bottom-6 left-6 right-6 text-ivory">
           <h3 className="h-display text-3xl md:text-4xl">{s.name}</h3>
-          <p className="text-ivory/80 text-sm mt-1 font-light">{s.tagline}</p>
+          {s.tagline && <p className="text-ivory/80 text-sm mt-1 font-light">{s.tagline}</p>}
         </div>
       </div>
-      <div className="flex items-center justify-between mt-4 text-[12px] uppercase tracking-widest-2">
-        <span className="text-muted2">{s.area} · {s.beds} · From ₹{s.priceFrom.toLocaleString('en-IN')}</span>
+      <div className="flex items-center justify-between mt-4 text-[12px] uppercase tracking-widest-2 min-h-[1.25rem]">
+        <span className="text-muted2">{meta}</span>
         <span className="flex items-center gap-1.5 text-ink group-hover:text-champagne transition-colors">
           Discover <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.5} />
         </span>
@@ -36,34 +42,34 @@ export default function Suites() {
           <div>
             <div className="flex items-center gap-4 mb-6">
               <div className="hairline" />
-              <span className="eyebrow">The Residences</span>
+              <span className="eyebrow">{suitesMeta.eyebrow}</span>
             </div>
             <h2 className="h-display text-5xl md:text-6xl lg:text-7xl text-ink">
-              Two collections. <br />
-              <span className="italic text-champagne">Seven residences.</span>
+              {suitesMeta.headingLine1} <br />
+              <span className="italic text-champagne">{suitesMeta.headingLine2}</span>
             </h2>
           </div>
-          <p className="text-muted2 max-w-md text-base md:text-lg leading-relaxed">
-            Each suite is an argument for restraint — designed to feel less like a hotel and more like the second home you always suspected existed.
-          </p>
+          {suitesMeta.intro && (
+            <p className="text-muted2 max-w-md text-base md:text-lg leading-relaxed">{suitesMeta.intro}</p>
+          )}
         </div>
 
         <div className="mb-10 flex items-center gap-4">
-          <span className="eyebrow text-ink">I. Executive Collection</span>
+          <span className="eyebrow text-ink">{suitesMeta.collections.executive.label}</span>
           <div className="flex-1 h-px bg-line" />
-          <span className="eyebrow">04 Suites</span>
+          <span className="eyebrow">{suitesMeta.collections.executive.count}</span>
         </div>
         <div className="grid md:grid-cols-12 gap-6 md:gap-8 mb-24">
-          <Card s={executive[0]} large />
-          <Card s={executive[1]} />
-          <Card s={executive[2]} />
-          <Card s={executive[3]} large />
+          {executive[0] && <Card s={executive[0]} large />}
+          {executive[1] && <Card s={executive[1]} />}
+          {executive[2] && <Card s={executive[2]} />}
+          {executive[3] && <Card s={executive[3]} large />}
         </div>
 
         <div className="mb-10 flex items-center gap-4">
-          <span className="eyebrow text-ink">II. Livoraa × The Signature Suite</span>
+          <span className="eyebrow text-ink">{suitesMeta.collections.premium.label}</span>
           <div className="flex-1 h-px bg-line" />
-          <span className="eyebrow">03 Residences</span>
+          <span className="eyebrow">{suitesMeta.collections.premium.count}</span>
         </div>
         <div className="grid md:grid-cols-12 gap-6 md:gap-8">
           {premium.map((s) => (

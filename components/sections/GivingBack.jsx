@@ -18,28 +18,36 @@ export default function GivingBack() {
             </h2>
           </div>
           <div className="md:col-span-5 md:col-start-8 md:pt-6">
-            <p className="text-muted2 text-base md:text-lg leading-relaxed">{givingBack.intro}</p>
-            <blockquote className="mt-8 border-l-2 border-champagne pl-6">
-              <p className="h-display italic text-2xl md:text-3xl text-ink leading-snug">{givingBack.quote}</p>
-              <footer className="mt-4 eyebrow">{givingBack.attribution}</footer>
-            </blockquote>
+            {givingBack.intro && (
+              <p className="text-muted2 text-base md:text-lg leading-relaxed">{givingBack.intro}</p>
+            )}
+            {givingBack.quote && (
+              <blockquote className="mt-8 border-l-2 border-champagne pl-6">
+                <p className="h-display italic text-2xl md:text-3xl text-ink leading-snug">{givingBack.quote}</p>
+                {givingBack.attribution && (
+                  <footer className="mt-4 eyebrow">{givingBack.attribution}</footer>
+                )}
+              </blockquote>
+            )}
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-10">
-          {givingBack.partners.map((p) => (
-            <div key={p.name} className="bg-ivory group overflow-hidden">
-              <div className="relative aspect-[4/3] overflow-hidden bg-line">
-                <img src={p.image} alt={p.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+        {givingBack.partners && givingBack.partners.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-6 md:gap-10">
+            {givingBack.partners.map((p) => (
+              <div key={p.name} className="bg-ivory group overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden bg-line">
+                  <img src={p.image} alt={p.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                </div>
+                <div className="p-8 md:p-10">
+                  {p.cause && <div className="eyebrow text-champagne mb-2">{p.cause}</div>}
+                  <h3 className="h-display text-3xl md:text-4xl text-ink mb-4">{p.name}</h3>
+                  {p.description && <p className="text-muted2 leading-relaxed">{p.description}</p>}
+                </div>
               </div>
-              <div className="p-8 md:p-10">
-                <div className="eyebrow text-champagne mb-2">{p.cause}</div>
-                <h3 className="h-display text-3xl md:text-4xl text-ink mb-4">{p.name}</h3>
-                <p className="text-muted2 leading-relaxed">{p.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {givingBack.cta && (
           <div className="mt-14 flex justify-center">

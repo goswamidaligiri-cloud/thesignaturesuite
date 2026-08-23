@@ -3,20 +3,26 @@ import { site, footer } from '@/lib/content';
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const hasSocial = site.socials && (site.socials.instagram || site.socials.facebook || site.socials.linkedin);
+
   return (
     <footer className="bg-ink text-ivory pt-20 pb-10">
       <div className="container">
         <div className="grid md:grid-cols-12 gap-12 pb-16 border-b border-ivory/15">
           <div className="md:col-span-5">
             <h3 className="h-display text-4xl md:text-5xl">{site.name}</h3>
-            <p className="text-ivory/60 mt-4 text-sm md:text-base leading-relaxed max-w-sm">{footer.description}</p>
-            <div className="mt-8 flex items-center gap-3">
-              {site.socials.instagram && (
-                <a href={site.socials.instagram} target="_blank" rel="noopener" aria-label="Instagram" className="w-10 h-10 border border-ivory/20 flex items-center justify-center hover:border-champagne hover:text-champagne transition-colors">
-                  <Instagram className="w-4 h-4" strokeWidth={1.5} />
-                </a>
-              )}
-            </div>
+            {footer.description && (
+              <p className="text-ivory/60 mt-4 text-sm md:text-base leading-relaxed max-w-sm">{footer.description}</p>
+            )}
+            {hasSocial && (
+              <div className="mt-8 flex items-center gap-3">
+                {site.socials.instagram && (
+                  <a href={site.socials.instagram} target="_blank" rel="noopener" aria-label="Instagram" className="w-10 h-10 border border-ivory/20 flex items-center justify-center hover:border-champagne hover:text-champagne transition-colors">
+                    <Instagram className="w-4 h-4" strokeWidth={1.5} />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {footer.columns.map((col) => (
