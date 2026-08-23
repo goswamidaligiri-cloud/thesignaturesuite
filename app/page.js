@@ -1,6 +1,9 @@
-'use client';
+// Homepage — async Server Component.
+// Single GROQ round-trip to Sanity. Every section receives its data via
+// props; every component internally hides itself if the data is missing.
+import {sanityFetch} from '@/sanity/lib/client';
+import {HOME_QUERY, HOME_TAGS} from '@/sanity/lib/queries';
 
-import { useEffect, useState } from 'react';
 import Navigation from '@/components/sections/Navigation';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
@@ -15,32 +18,46 @@ import FAQ from '@/components/sections/FAQ';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/sections/Footer';
 
-function App() {
-  const [scrolled, setScrolled] = useState(false);
+export const revalidate = 60;
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+async function safeFetch() {
+  try {
+    return await sanityFetch({query: HOME_QUERY, tags: HOME_TAGS});
+  } catch (err) {
+    // On any Sanity error, render the site skeleton with no data instead
+    // of surfacing a 500. Empty sections stay hidden per the CMS contract.
+    console.error('[Sanity] HOME_QUERY failed:', err?.message || err);
+    return {};
+  }
+}
+
+export default async function HomePage() {
+  const d = await safeFetch();
+
+  const siteName = d?.siteSettings?.name || 'The Signature Suite';
+  const siteTagline = d?.siteSettings?.tagline || 'Serviced Residences';
+  const bookingUrl = d?.navigation?.primaryCta?.href || d?.siteSettings?.bookingUrl || '#book';
 
   return (
     <main className="min-h-screen bg-ivory">
-      <Navigation scrolled={scrolled} />
-      <Hero />
-      <About />
-      <Experience />
-      <Suites />
-      <Amenities />
-      <Gallery />
-      <GivingBack />
-      <Location />
-      <Reviews />
-      <FAQ />
-      <Contact />
-      <Footer />
+      <Navigation
+        nav={d?.navigation?.items || []}
+        siteName={siteName}
+        siteTagline={siteTagline}
+        bookingUrl={bookingUrl}
+      />
+      <Hero data={d?.hero} />
+      <About data={d?.about} />
+      <Experience data={d?.experience} />
+      <Suites meta={d?.suitesMeta} items={d?.suites || []} />
+      <Amenities meta={d?.amenitiesMeta} items={d?.amenities || []} />
+      <Gallery meta={d?.galleryMeta} images={d?.gallery || []} categories={d?.galleryCategories || []} />
+      <GivingBack data={d?.givingBack} partners={d?.givingBackPartners || []} />
+      <Location data={d?.location} nearby={d?.nearby || []} />
+      <Reviews meta={d?.reviewsMeta} items={d?.reviews || []} />
+      <FAQ meta={d?.faqMeta} items={d?.faqs || []} />
+      <Contact data={d?.contact} />
+      <Footer data={d?.footer} siteName={siteName} socials={d?.siteSettings?.socials || {}} />
     </main>
   );
 }
-
-export default App;
