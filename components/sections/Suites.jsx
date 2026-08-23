@@ -1,35 +1,26 @@
-import {ArrowUpRight} from 'lucide-react';
 import {imgUrl} from '@/sanity/lib/image';
 
-function Card({s, large}) {
-  const meta = [
-    s.area,
-    s.beds,
-    s.priceFrom ? `From ₹${Number(s.priceFrom).toLocaleString('en-IN')}` : null,
-  ].filter(Boolean).join(' · ');
-
-  const img = s.heroImage ? imgUrl(s.heroImage, {w: 1200}) : null;
+// Editorial suite presentation. Each suite gets its own row with an
+// alternating rhythm. Photography dominates; text is small, deliberate.
+function Row({s, reverse}) {
+  const src = s.heroImage ? imgUrl(s.heroImage, {w: 1600}) : null;
+  const meta = [s.area, s.beds].filter(Boolean).join(' · ');
 
   return (
-    <a href={s.slug ? `/suites/${s.slug}` : '#'} className={`group block ${large ? 'md:col-span-8' : 'md:col-span-4'}`}>
-      <div className="relative overflow-hidden bg-stone2 aspect-[4/5]">
-        {img && <img src={img} alt={s.heroImageAlt || s.name || ''} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent opacity-70" />
-        {s.collectionLabel && (
-          <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
-            <span className="text-[10px] uppercase tracking-widest-2 text-ivory/90 bg-ink/30 backdrop-blur-sm px-3 py-1.5">{s.collectionLabel}</span>
-          </div>
-        )}
-        <div className="absolute bottom-6 left-6 right-6 text-ivory">
-          {s.name && <h3 className="h-display text-3xl md:text-4xl">{s.name}</h3>}
-          {s.tagline && <p className="text-ivory/80 text-sm mt-1 font-light">{s.tagline}</p>}
+    <a href={s.slug ? `/suites/${s.slug}` : '#'} className="group grid md:grid-cols-12 gap-8 md:gap-16 items-center py-14 md:py-24 border-t border-line">
+      <div className={`md:col-span-7 ${reverse ? 'md:order-2' : ''}`}>
+        <div className="relative aspect-[4/3] md:aspect-[3/2] overflow-hidden bg-stone2">
+          {src && <img src={src} alt={s.heroImageAlt || s.name || ''} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.02]" />}
         </div>
       </div>
-      <div className="flex items-center justify-between mt-4 text-[12px] uppercase tracking-widest-2 min-h-[1.25rem]">
-        <span className="text-muted2">{meta}</span>
-        <span className="flex items-center gap-1.5 text-ink group-hover:text-champagne transition-colors">
-          Discover <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-        </span>
+      <div className={`md:col-span-4 ${reverse ? 'md:order-1 md:col-start-2' : 'md:col-start-9'}`}>
+        {s.collectionLabel && (
+          <div className="text-[10px] uppercase tracking-[0.28em] text-muted2 mb-4">{s.collectionLabel}</div>
+        )}
+        {s.name && <h3 className="h-display text-4xl md:text-5xl text-ink">{s.name}</h3>}
+        {s.tagline && <p className="mt-4 text-ink/70 text-base leading-relaxed max-w-sm">{s.tagline}</p>}
+        {meta && <div className="mt-6 text-[11px] uppercase tracking-[0.22em] text-muted2">{meta}</div>}
+        <div className="mt-8 text-[11px] uppercase tracking-[0.22em] text-ink group-hover:text-champagne transition-colors">Explore suite →</div>
       </div>
     </a>
   );
@@ -38,79 +29,24 @@ function Card({s, large}) {
 export default function Suites({meta, items = []}) {
   if (!items.length) return null;
 
-  const executive = items.filter((s) => (s.collectionLabel || '').toLowerCase().includes('executive'));
-  const premium = items.filter((s) => (s.collectionLabel || '').toLowerCase().includes('livoraa'));
-  const other = items.filter((s) => !executive.includes(s) && !premium.includes(s));
-
-  const eLabel = meta?.executiveLabel || 'I. Executive Collection';
-  const eCount = meta?.executiveCount || (executive.length ? `${String(executive.length).padStart(2,'0')} Suites` : '');
-  const pLabel = meta?.premiumLabel || 'II. Livoraa × The Signature Suite';
-  const pCount = meta?.premiumCount || (premium.length ? `${String(premium.length).padStart(2,'0')} Residences` : '');
-
   return (
-    <section id="suites" className="py-28 md:py-40 bg-stone2">
+    <section id="suites" className="py-24 md:py-40 bg-ivory">
       <div className="container">
-        {(meta?.headingLine1 || meta?.headingLine2 || meta?.intro) && (
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-24">
-            <div>
-              {meta?.eyebrow && (
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="hairline" />
-                  <span className="eyebrow">{meta.eyebrow}</span>
-                </div>
-              )}
-              {(meta?.headingLine1 || meta?.headingLine2) && (
-                <h2 className="h-display text-5xl md:text-6xl lg:text-7xl text-ink">
-                  {meta.headingLine1}
-                  {meta.headingLine2 && (<><br /><span className="italic text-champagne">{meta.headingLine2}</span></>)}
-                </h2>
-              )}
+        {/* Restrained section marker only — no giant headline */}
+        <div className="flex items-baseline justify-between mb-8 md:mb-4">
+          <div className="text-[11px] uppercase tracking-[0.28em] text-muted2">{meta?.eyebrow || 'The Residences'}</div>
+          {(meta?.executiveCount || meta?.premiumCount) && (
+            <div className="text-[11px] uppercase tracking-[0.28em] text-muted2 hidden md:block">
+              {items.length.toString().padStart(2, '0')} residences
             </div>
-            {meta?.intro && (
-              <p className="text-muted2 max-w-md text-base md:text-lg leading-relaxed">{meta.intro}</p>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
-        {executive.length > 0 && (
-          <>
-            <div className="mb-10 flex items-center gap-4">
-              <span className="eyebrow text-ink">{eLabel}</span>
-              <div className="flex-1 h-px bg-line" />
-              {eCount && <span className="eyebrow">{eCount}</span>}
-            </div>
-            <div className="grid md:grid-cols-12 gap-6 md:gap-8 mb-24">
-              {executive[0] && <Card s={executive[0]} large />}
-              {executive[1] && <Card s={executive[1]} />}
-              {executive[2] && <Card s={executive[2]} />}
-              {executive[3] && <Card s={executive[3]} large />}
-              {executive.slice(4).map((s) => <div key={s._id} className="md:col-span-4"><Card s={s} /></div>)}
-            </div>
-          </>
-        )}
-
-        {premium.length > 0 && (
-          <>
-            <div className="mb-10 flex items-center gap-4">
-              <span className="eyebrow text-ink">{pLabel}</span>
-              <div className="flex-1 h-px bg-line" />
-              {pCount && <span className="eyebrow">{pCount}</span>}
-            </div>
-            <div className="grid md:grid-cols-12 gap-6 md:gap-8">
-              {premium.map((s) => (
-                <div key={s._id} className="md:col-span-4"><Card s={s} /></div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {other.length > 0 && (
-          <div className="grid md:grid-cols-12 gap-6 md:gap-8 mt-16">
-            {other.map((s) => (
-              <div key={s._id} className="md:col-span-4"><Card s={s} /></div>
-            ))}
-          </div>
-        )}
+        <div>
+          {items.map((s, i) => (
+            <Row key={s._id || s.slug || i} s={s} reverse={i % 2 === 1} />
+          ))}
+        </div>
       </div>
     </section>
   );

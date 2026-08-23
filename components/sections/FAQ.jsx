@@ -3,52 +3,37 @@
 import {useState} from 'react';
 import {Plus, Minus} from 'lucide-react';
 
+// Functional accordion. No oversized poetic heading.
 export default function FAQ({meta, items = []}) {
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(-1);
   if (!items.length) return null;
 
   return (
-    <section id="faq" className="py-28 md:py-40 bg-ivory">
-      <div className="container grid md:grid-cols-12 gap-12 md:gap-20">
-        <div className="md:col-span-5">
-          <div className="sticky top-32">
-            {meta?.eyebrow && (
-              <div className="flex items-center gap-4 mb-6">
-                <div className="hairline" />
-                <span className="eyebrow">{meta.eyebrow}</span>
-              </div>
-            )}
-            {(meta?.headingLine1 || meta?.headingLine2) && (
-              <h2 className="h-display text-5xl md:text-6xl lg:text-7xl text-ink">
-                {meta.headingLine1}
-                {meta.headingLine2 && (<><br /><span className="italic text-champagne">{meta.headingLine2}</span></>)}
-              </h2>
-            )}
-          </div>
+    <section id="faq" className="py-24 md:py-40 bg-ivory">
+      <div className="container max-w-4xl">
+        <div className="text-[11px] uppercase tracking-[0.28em] text-muted2 mb-12 md:mb-16">
+          {meta?.eyebrow || 'FAQ'}
         </div>
-
-        <div className="md:col-span-7">
-          <ul className="border-t border-line">
-            {items.map((f, idx) => {
-              const isOpen = open === idx;
-              return (
-                <li key={f._id} className="border-b border-line">
-                  <button onClick={() => setOpen(isOpen ? -1 : idx)} className="w-full text-left py-6 flex items-start justify-between gap-6 group">
-                    <span className="h-display text-2xl md:text-3xl text-ink group-hover:text-champagne transition-colors">{f.question}</span>
-                    <span className="mt-2 text-champagne">
-                      {isOpen ? <Minus className="w-5 h-5" strokeWidth={1.25} /> : <Plus className="w-5 h-5" strokeWidth={1.25} />}
-                    </span>
-                  </button>
-                  <div className={`grid transition-all duration-500 ease-out ${isOpen ? 'grid-rows-[1fr] opacity-100 pb-8' : 'grid-rows-[0fr] opacity-0'}`}>
-                    <div className="overflow-hidden">
-                      {f.answer && <p className="text-muted2 text-base md:text-lg leading-relaxed max-w-2xl pr-8 whitespace-pre-line">{f.answer}</p>}
-                    </div>
+        <ul className="border-t border-line">
+          {items.map((f, idx) => {
+            const isOpen = open === idx;
+            return (
+              <li key={f._id} className="border-b border-line">
+                <button onClick={() => setOpen(isOpen ? -1 : idx)} className="w-full text-left py-6 flex items-start justify-between gap-6 group">
+                  <span className="text-ink text-lg md:text-xl font-light group-hover:text-champagne transition-colors">{f.question}</span>
+                  <span className="mt-1 text-ink/60">
+                    {isOpen ? <Minus className="w-4 h-4" strokeWidth={1.25} /> : <Plus className="w-4 h-4" strokeWidth={1.25} />}
+                  </span>
+                </button>
+                <div className={`grid transition-all duration-500 ease-out ${isOpen ? 'grid-rows-[1fr] opacity-100 pb-8' : 'grid-rows-[0fr] opacity-0'}`}>
+                  <div className="overflow-hidden">
+                    {f.answer && <p className="text-ink/70 text-base leading-[1.7] max-w-2xl pr-8 whitespace-pre-line font-light">{f.answer}</p>}
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );
