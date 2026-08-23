@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background: #FAF8F5;
+    color: #171717;
+    font-family: var(--font-sans), Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: #C6A66A; color: #171717; }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-[11px] uppercase tracking-widest-2 text-muted2 font-medium;
+  }
+  .h-display {
+    font-family: var(--font-serif), 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
+  }
+  .btn-gold {
+    @apply inline-flex items-center justify-center px-7 py-3.5 text-[13px] uppercase tracking-widest-2 font-medium bg-ink text-ivory hover:bg-champagne hover:text-ink transition-colors duration-500;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-7 py-3.5 text-[13px] uppercase tracking-widest-2 font-medium border border-ivory/40 text-ivory hover:bg-ivory hover:text-ink transition-colors duration-500;
+  }
+  .hairline {
+    @apply h-px w-16 bg-champagne;
+  }
+}
+
+/* Hide scrollbar for horizontal galleries in Phase 2 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
